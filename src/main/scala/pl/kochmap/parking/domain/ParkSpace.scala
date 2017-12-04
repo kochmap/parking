@@ -1,7 +1,7 @@
 package pl.kochmap.parking.domain
 
 class ParkSpace {
-  def startParkingMeterFor(vehicle: Vehicle): Either[ParkingMeterStartFailureException, ParkingTicket] = ???
+  def startParkingMeterFor(vehicle: Vehicle): Either[ParkingMeterStartFailureException, ActiveParkingTicket] = ???
 }
 
 sealed trait ParkingMeterStartFailureException extends Exception
