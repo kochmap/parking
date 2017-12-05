@@ -1,10 +1,11 @@
-package pl.kochmap.parking.domain
+package pl.kochmap.parking.domain.money
 
 import java.time.{Duration, Instant}
 
 import org.scalatest.{FlatSpec, GivenWhenThen, Matchers}
-import pl.kochmap.parking.domain.FeeTariff.FeeTariff
-import pl.kochmap.parking.domain.ParkingFeeCalculatorSpec.ParkingFeeCalculatorBehaviour
+import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
+import pl.kochmap.parking.domain.money.ParkingFeeCalculatorSpec.ParkingFeeCalculatorBehaviour
+import pl.kochmap.parking.domain.{ParkSpace, StoppedParkingTicket, Vehicle}
 
 class ParkingFeeCalculatorSpec
     extends FlatSpec

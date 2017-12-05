@@ -1,8 +1,9 @@
-package pl.kochmap.parking.domain
+package pl.kochmap.parking.domain.money
 
 import java.time.Duration
 
-import pl.kochmap.parking.domain.FeeTariff.FeeTariff
+import pl.kochmap.parking.domain.StoppedParkingTicket
+import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
 
 object ParkingFeeCalculator {
 

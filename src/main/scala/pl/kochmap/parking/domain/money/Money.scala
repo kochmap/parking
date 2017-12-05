@@ -1,6 +1,8 @@
-package pl.kochmap.parking.domain
+package pl.kochmap.parking.domain.money
 
-import pl.kochmap.parking.domain.Currency.Currency
+import pl.kochmap.parking.domain.money.Currency.Currency
+
+case class Money(amount: Double, currency: Currency)
 
 class Fee(val baseAmount: Double, val currencySnapshot: CurrencySnapshot) {
   val amountInCurrency: Double = currencySnapshot.currency.formater(

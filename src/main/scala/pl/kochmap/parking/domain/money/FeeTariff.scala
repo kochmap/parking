@@ -1,4 +1,4 @@
-package pl.kochmap.parking.domain
+package pl.kochmap.parking.domain.money
 
 object FeeTariff extends Enumeration {
   type FeeTariff = Value

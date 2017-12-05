@@ -2,10 +2,10 @@ package pl.kochmap.parking.domain
 
 import org.scalatest.{FlatSpec, GivenWhenThen}
 
-class ParkSpaceSpec extends FlatSpec with GivenWhenThen {
+class ParkingSpaceSpec extends FlatSpec with GivenWhenThen {
 
-  "Park space with stopped parking meter" should "start parking meter" in {
-    Given("a park space with not started parking meter and a car")
+  "Parking space with stopped parking meter" should "start parking meter" in {
+    Given("a parking space with not started parking meter and a car")
     val parkSpace = new ParkSpace()
     val vehicle = Vehicle(None)
 
@@ -19,8 +19,8 @@ class ParkSpaceSpec extends FlatSpec with GivenWhenThen {
     }
   }
 
-  "Park space with already started parking meter" should "not start parking meter" in {
-    Given("a park space with already started parking meter and a car")
+  "Parking space with already started parking meter" should "not start parking meter" in {
+    Given("a parking space with already started parking meter and a car")
     val parkSpace = new ParkSpace()
     val vehicle = Vehicle(None)
 
