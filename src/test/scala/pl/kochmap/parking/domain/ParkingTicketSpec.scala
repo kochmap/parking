@@ -14,9 +14,9 @@ class ParkingTicketSpec extends FlatSpec with GivenWhenThen {
     When("stop counting fee is invoked")
     val parkingTicketWithAChargedFee = activeParkingTicket.stopCountingFee
 
-    Then("result is parking ticket with a charged fee")
+    Then("result is stopped parking ticket")
     parkingTicketWithAChargedFee match {
-      case _: ParkingTicketWithAChargedFee => succeed
+      case _: StoppedParkingTicket => succeed
       case _ => fail("It is something else")
     }
   }

@@ -1,0 +1,1 @@
+1. Fee is calculated by adding hour rates e.g. 4 hours of parking for regular rate will cost (1 + 2 + 4 + 8) = 15

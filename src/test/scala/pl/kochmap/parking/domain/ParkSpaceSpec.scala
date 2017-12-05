@@ -4,7 +4,7 @@ import org.scalatest.{FlatSpec, GivenWhenThen}
 
 class ParkSpaceSpec extends FlatSpec with GivenWhenThen {
 
-  "Park space" should "start parking meter" in {
+  "Park space with stopped parking meter" should "start parking meter" in {
     Given("a park space with not started parking meter and a car")
     val parkSpace = new ParkSpace()
     val vehicle = Vehicle(None)
@@ -19,12 +19,13 @@ class ParkSpaceSpec extends FlatSpec with GivenWhenThen {
     }
   }
 
-  it should "not start parking meter" in {
+  "Park space with already started parking meter" should "not start parking meter" in {
     Given("a park space with already started parking meter and a car")
     val parkSpace = new ParkSpace()
     val vehicle = Vehicle(None)
 
-    When("start parking meter is invoked")
+    When("start parking meter is invoked twice")
+    parkSpace.startParkingMeterFor(vehicle)
     val resultEither = parkSpace.startParkingMeterFor(vehicle)
 
     Then("result should be a exception that parking meter was started")

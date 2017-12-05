@@ -14,14 +14,13 @@ case class ActiveParkingTicket(id: Option[Long],
                                vehicle: Vehicle,
                                startTimestamp: Instant = Instant.now())
     extends ParkingTicket {
-  def stopCountingFee: ParkingTicketWithAChargedFee = ???
+  def stopCountingFee: StoppedParkingTicket =
+    StoppedParkingTicket(id, parkSpace, vehicle, startTimestamp)
 }
 
-case class ParkingTicketWithAChargedFee(id: Option[Long],
-                                        parkSpace: ParkSpace,
-                                        vehicle: Vehicle,
-                                        startTimestamp: Instant,
-                                        stopTimestamp: Instant = Instant.now())
-    extends ParkingTicket {
-  val fee: Float = ???
-}
+case class StoppedParkingTicket(id: Option[Long],
+                                parkSpace: ParkSpace,
+                                vehicle: Vehicle,
+                                startTimestamp: Instant,
+                                stopTimestamp: Instant = Instant.now())
+    extends ParkingTicket {}
