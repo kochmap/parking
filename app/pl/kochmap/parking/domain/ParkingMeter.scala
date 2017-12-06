@@ -1,13 +1,15 @@
 package pl.kochmap.parking.domain
 
-class ParkSpace(id: Option[Long], tickets: Seq[ParkingTicket]) {
+class ParkingMeter(val id: Option[Long],
+                   val name: String,
+                   val tickets: Seq[ParkingTicket]) {
 
-  val parkingMeterRunning: Boolean = tickets.exists {
+  def parkingMeterRunning: Boolean = tickets.exists {
     case _: ActiveParkingTicket => true
     case _                      => false
   }
 
-  def startParkingMeterFor(vehicle: Vehicle)
+  def startFor(vehicle: Vehicle)
     : Either[ParkingMeterStartFailureException, ActiveParkingTicket] = {
     if (parkingMeterRunning) Left(new ParkingMeterAlreadyStartedException)
     else Right(ActiveParkingTicket(None, id, vehicle.id))

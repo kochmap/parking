@@ -73,7 +73,7 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     def stopTimestamp: Rep[Instant] = column[Instant]("stop_timestamp")
 
     def * : ProvenShape[ParkingTicketRow] =
-      (id.?, parkingMeterId, vehicleId, startTimestamp, stopTimestamp) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
+      (id.?, parkingMeterId.?, vehicleId.?, startTimestamp, stopTimestamp.?) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
 
     def parkingSpace: ForeignKeyQuery[ParkingMeters, ParkingMeterRow] =
       foreignKey("fk_parking_tickets_parking_meter_id",
@@ -89,14 +89,23 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
   class Fees(tag: Tag) extends Table[FeeRow](tag, "fees") {
     def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def amount: Rep[Double] = column[Double]("base_amount")
+    def baseAmount: Rep[Double] = column[Double]("base_amount")
+
+    def exchangeRate: Rep[Double] = column[Double]("exchange_rate")
 
     def currency: Rep[Currency] = column[Currency]("currency")
+
+    def amountInCurrency: Rep[Double] = column[Double]("amount_in_currency")
 
     def parkingTicketId: Rep[Long] = column[Long]("parking_ticket_id")
 
     def * : ProvenShape[FeeRow] =
-      (id.?, amount, currency, parkingTicketId) <> (FeeRow.tupled, FeeRow.unapply)
+      (id.?,
+       baseAmount,
+       exchangeRate,
+       currency,
+       amountInCurrency,
+       parkingTicketId.?) <> (FeeRow.tupled, FeeRow.unapply)
 
     def parkingTicket: ForeignKeyQuery[ParkingTickets, ParkingTicketRow] =
       foreignKey("fk_fees_parking_ticket_id_id",
@@ -121,12 +130,14 @@ case class VehicleRow(id: Option[Long], licensePlateNumber: String)
 case class ParkingMeterRow(id: Option[Long], name: String)
 
 case class ParkingTicketRow(id: Option[Long],
-                            parkingSpaceId: Long,
-                            vehicleId: Long,
+                            parkingMeterId: Option[Long],
+                            vehicleId: Option[Long],
                             startTimestamp: Instant,
-                            stopTimestamp: Instant)
+                            stopTimestampOption: Option[Instant])
 
 case class FeeRow(id: Option[Long],
-                  amount: Double,
+                  baseAmount: Double,
+                  exchangeRate: Double,
                   currency: Currency,
-                  parkingTicketId: Long)
+                  amountInCurrency: Double,
+                  parkingTicketId: Option[Long])

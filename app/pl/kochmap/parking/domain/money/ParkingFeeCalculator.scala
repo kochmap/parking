@@ -16,10 +16,14 @@ object ParkingFeeCalculator {
   def calculateFee(stoppedParkingTicket: StoppedParkingTicket,
                    currencySnapshot: CurrencySnapshot,
                    feeTariff: FeeTariff): Fee = {
-    new Fee(tariffFeeCalculateStrategyMap(feeTariff)(
-              Duration.between(stoppedParkingTicket.startTimestamp,
-                               stoppedParkingTicket.stopTimestamp)),
-            currencySnapshot)
+    new Fee(
+      None,
+      tariffFeeCalculateStrategyMap(feeTariff)(
+        Duration.between(stoppedParkingTicket.startTimestamp,
+                         stoppedParkingTicket.stopTimestamp)),
+      currencySnapshot,
+      stoppedParkingTicket.id
+    )
   }
 
   private def calculateFeeOnRegularTariff(duration: Duration): Double = {

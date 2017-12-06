@@ -2,9 +2,10 @@ package pl.kochmap.parking.domain.money
 
 import pl.kochmap.parking.domain.money.Currency.Currency
 
-case class Money(amount: Double, currency: Currency)
-
-class Fee(val baseAmount: Double, val currencySnapshot: CurrencySnapshot) {
+class Fee(val id: Option[Long],
+          val baseAmount: Double,
+          val currencySnapshot: CurrencySnapshot,
+          val parkingTicketId: Option[Long]) {
   val amountInCurrency: Double = currencySnapshot.currency.formater(
     baseAmount * currencySnapshot.exchangeRate)
 }
@@ -19,5 +20,6 @@ object Currency extends Enumeration {
 case class CurrencySnapshot(exchangeRate: Double, currency: Currency)
 
 object CurrencySnapshot {
-  val constant1To1ExchangeRatePlnCurrencySnapshot = CurrencySnapshot(1.0d, Currency.PLN)
+  val constant1To1ExchangeRatePlnCurrencySnapshot =
+    CurrencySnapshot(1.0d, Currency.PLN)
 }
