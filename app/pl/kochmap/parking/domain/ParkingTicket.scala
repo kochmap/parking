@@ -4,23 +4,23 @@ import java.time.Instant
 
 sealed trait ParkingTicket {
   def id: Option[Long]
-  def parkSpace: ParkSpace
-  def vehicle: Vehicle
+  def parkSpaceId: Option[Long]
+  def vehicleId: Option[Long]
   def startTimestamp: Instant
 }
 
 case class ActiveParkingTicket(id: Option[Long],
-                               parkSpace: ParkSpace,
-                               vehicle: Vehicle,
+                               parkSpaceId: Option[Long],
+                               vehicleId: Option[Long],
                                startTimestamp: Instant = Instant.now())
     extends ParkingTicket {
   def stopCountingFee: StoppedParkingTicket =
-    StoppedParkingTicket(id, parkSpace, vehicle, startTimestamp)
+    StoppedParkingTicket(id, parkSpaceId, vehicleId, startTimestamp)
 }
 
 case class StoppedParkingTicket(id: Option[Long],
-                                parkSpace: ParkSpace,
-                                vehicle: Vehicle,
+                                parkSpaceId: Option[Long],
+                                vehicleId: Option[Long],
                                 startTimestamp: Instant,
                                 stopTimestamp: Instant = Instant.now())
     extends ParkingTicket {}
