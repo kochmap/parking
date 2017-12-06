@@ -9,10 +9,10 @@ class ParkingMeter(val id: Option[Long],
     case _                      => false
   }
 
-  def startFor(vehicle: Vehicle)
+  def startFor(vehicleLicensePlateNumber: String)
     : Either[ParkingMeterStartFailureException, ActiveParkingTicket] = {
     if (parkingMeterRunning) Left(new ParkingMeterAlreadyStartedException)
-    else Right(ActiveParkingTicket(None, id, vehicle.id))
+    else Right(ActiveParkingTicket(None, id, vehicleLicensePlateNumber))
   }
 }
 

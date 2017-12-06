@@ -36,17 +36,6 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
     s => Currency.withName(s)
   )
 
-  class Vehicles(tag: Tag) extends Table[VehicleRow](tag, "vehicles") {
-    def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
-
-    def licensePlateNumber: Rep[String] = column[String]("license_plate_number")
-
-    def * : ProvenShape[VehicleRow] =
-      (id.?, licensePlateNumber) <> (VehicleRow.tupled, VehicleRow.unapply)
-  }
-
-  lazy val vehicles = TableQuery[Vehicles]
-
   class ParkingMeters(tag: Tag)
       extends Table[ParkingMeterRow](tag, "parking_meters") {
     def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -66,22 +55,19 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
     def parkingMeterId: Rep[Long] = column[Long]("parking_meter_id")
 
-    def vehicleId: Rep[Long] = column[Long]("vehicle_id")
+    def vehicleLicensePlateNumber: Rep[String] = column[String]("vehicle_license_plate_number")
 
     def startTimestamp: Rep[Instant] = column[Instant]("start_timestamp")
 
     def stopTimestamp: Rep[Instant] = column[Instant]("stop_timestamp")
 
     def * : ProvenShape[ParkingTicketRow] =
-      (id.?, parkingMeterId.?, vehicleId.?, startTimestamp, stopTimestamp.?) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
+      (id.?, parkingMeterId.?, vehicleLicensePlateNumber, startTimestamp, stopTimestamp.?) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
 
-    def parkingSpace: ForeignKeyQuery[ParkingMeters, ParkingMeterRow] =
+    def parkingMeter: ForeignKeyQuery[ParkingMeters, ParkingMeterRow] =
       foreignKey("fk_parking_tickets_parking_meter_id",
                  parkingMeterId,
                  parkingMeters)(_.id)
-
-    def vehicle: ForeignKeyQuery[Vehicles, VehicleRow] =
-      foreignKey("fk_parking_tickets_vehicle_id", vehicleId, vehicles)(_.id)
   }
 
   lazy val parkingTickets = TableQuery[ParkingTickets]
@@ -117,21 +103,18 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
   private def createSchema() = {
     Logger.info("Creating schema for db")
-    val schema = vehicles.schema ++ parkingMeters.schema ++ parkingTickets.schema ++ fees.schema
+    val schema = parkingMeters.schema ++ parkingTickets.schema ++ fees.schema
     db.run(schema.create)
   }
 
   createSchema()
 
 }
-
-case class VehicleRow(id: Option[Long], licensePlateNumber: String)
-
 case class ParkingMeterRow(id: Option[Long], name: String)
 
 case class ParkingTicketRow(id: Option[Long],
                             parkingMeterId: Option[Long],
-                            vehicleId: Option[Long],
+                            vehicleLicensePlateNumber: String,
                             startTimestamp: Instant,
                             stopTimestampOption: Option[Instant])
 

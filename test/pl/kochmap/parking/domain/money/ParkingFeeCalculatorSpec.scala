@@ -6,7 +6,7 @@ import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, GivenWhenThen, Matchers}
 import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
 import pl.kochmap.parking.domain.money.ParkingFeeCalculatorSpec.ParkingFeeCalculatorBehaviour
-import pl.kochmap.parking.domain.{ParkingMeter, StoppedParkingTicket, Vehicle}
+import pl.kochmap.parking.domain.{ParkingMeter, StoppedParkingTicket}
 
 class ParkingFeeCalculatorSpec
     extends FlatSpec
@@ -59,7 +59,6 @@ object ParkingFeeCalculatorSpec {
       TolerantNumerics.tolerantDoubleEquality(epislon)
 
     val parkingMeter = new ParkingMeter(Some(1), "1", Nil)
-    val vehicle = Vehicle(Some(1), "1234")
     val currencySnapshot: CurrencySnapshot =
       CurrencySnapshot.constant1To1ExchangeRatePlnCurrencySnapshot
 
@@ -86,7 +85,7 @@ object ParkingFeeCalculatorSpec {
       val stopTimestamp = startTimestamp.plusSeconds(duration.getSeconds)
       StoppedParkingTicket(Some(1),
                            parkingMeter.id,
-                           vehicle.id,
+                           "abcde",
                            startTimestamp,
                            stopTimestamp)
     }
