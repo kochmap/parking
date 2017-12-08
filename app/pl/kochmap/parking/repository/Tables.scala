@@ -12,10 +12,11 @@ import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.lifted.{ForeignKeyQuery, ProvenShape}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
 @Singleton
-class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
+class Tables @Inject()(dbConfigProvider: DatabaseConfigProvider)(
     implicit executionContext: ExecutionContext) {
 
   val dbConfig: DatabaseConfig[JdbcProfile] = dbConfigProvider.get[JdbcProfile]
@@ -40,10 +41,10 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
       extends Table[ParkingMeterRow](tag, "parking_meters") {
     def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def name: Rep[String] = column[String]("name")
+    def domainId: Rep[String] = column[String]("domain_id", O.Unique)
 
     def * : ProvenShape[ParkingMeterRow] =
-      (id.?, name) <> (ParkingMeterRow.tupled, ParkingMeterRow.unapply)
+      (id.?, domainId) <> (ParkingMeterRow.tupled, ParkingMeterRow.unapply)
 
   }
 
@@ -55,14 +56,20 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
     def parkingMeterId: Rep[Long] = column[Long]("parking_meter_id")
 
-    def vehicleLicensePlateNumber: Rep[String] = column[String]("vehicle_license_plate_number")
+    def vehicleLicensePlateNumber: Rep[String] =
+      column[String]("vehicle_license_plate_number")
 
     def startTimestamp: Rep[Instant] = column[Instant]("start_timestamp")
 
-    def stopTimestamp: Rep[Instant] = column[Instant]("stop_timestamp")
+    def stopTimestamp: Rep[Option[Instant]] =
+      column[Option[Instant]]("stop_timestamp")
 
     def * : ProvenShape[ParkingTicketRow] =
-      (id.?, parkingMeterId.?, vehicleLicensePlateNumber, startTimestamp, stopTimestamp.?) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
+      (id.?,
+       parkingMeterId.?,
+       vehicleLicensePlateNumber,
+       startTimestamp,
+       stopTimestamp) <> (ParkingTicketRow.tupled, ParkingTicketRow.unapply)
 
     def parkingMeter: ForeignKeyQuery[ParkingMeters, ParkingMeterRow] =
       foreignKey("fk_parking_tickets_parking_meter_id",
@@ -101,16 +108,16 @@ class Tables @Inject()(val dbConfigProvider: DatabaseConfigProvider)(
 
   lazy val fees = TableQuery[Fees]
 
-  private def createSchema() = {
+  def createSchema() = {
     Logger.info("Creating schema for db")
     val schema = parkingMeters.schema ++ parkingTickets.schema ++ fees.schema
-    db.run(schema.create)
+    Await.ready(db.run(schema.create), Duration.Inf)
   }
 
   createSchema()
 
 }
-case class ParkingMeterRow(id: Option[Long], name: String)
+case class ParkingMeterRow(id: Option[Long], domainId: String)
 
 case class ParkingTicketRow(id: Option[Long],
                             parkingMeterId: Option[Long],

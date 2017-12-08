@@ -14,7 +14,7 @@ class ParkingFeeCalculatorSpec
     with Matchers
     with ParkingFeeCalculatorBehaviour {
 
-  "ParkingFeeCalculator" should behave like parkingFeeCalculator(
+  "Parking Fee Calculator" should behave like parkingFeeCalculator(
     1 hour,
     FeeTariff.REGULAR_TARIFF,
     1.0d)
