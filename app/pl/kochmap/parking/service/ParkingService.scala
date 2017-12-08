@@ -17,7 +17,7 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ParkingService @Inject() (
+class ParkingService @Inject()(
     parkingMeterRepository: ParkingMeterRepository,
     parkingTicketRepository: ParkingTicketRepository,
     dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
@@ -27,9 +27,9 @@ class ParkingService @Inject() (
   import dbConfig._
   import profile.api._
 
-  def startParkingMeter(parkingMeterId: String, dto: VehicleDto): Future[
+  def startParkingMeter(parkingMeterDomainId: String, dto: VehicleDto): Future[
     Option[Either[ParkingMeterStartFailureException, ActiveParkingTicket]]] = {
-    findParkingMeterByDomainIdOrCreateNew(parkingMeterId)
+    findParkingMeterByDomainIdOrCreateNew(parkingMeterDomainId)
       .map {
         case Some(parkingMeter) =>
           Some(parkingMeter.startFor(dto.licensePlateNumber))
@@ -79,8 +79,11 @@ class ParkingService @Inject() (
       }
   }
 
-  def isVehicleStartedParkingMeter(
-      carLicensePlateNumber: String): Future[Boolean] = ???
+  def hasVehicleHasActiveParkingMeter(
+      vehicleLicensePlateId: String): Future[Boolean] = {
+    parkingTicketRepository.hasVehicleHasActiveParkingMeter(
+      vehicleLicensePlateId)
+  }
 
   def earningsFrom(localDate: LocalDate): Future[(Double, Currency)] = ???
 

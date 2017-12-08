@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                                            controllers.ParkingController.index
-POST        /parking-meter/:parkingMeterId/start        controllers.ParkingController.startParkingMeter(parkingMeterId)
-GET         /parking-meter/:parkingMeterId/stop         controllers.ParkingController.stopParkingMeter(parkingMeterId)
+GET         /                                                               controllers.ParkingController.index
+POST        /parking-meter/:parkingMeterId/start                            controllers.ParkingController.startParkingMeter(parkingMeterId)
+GET         /parking-meter/:parkingMeterId/stop                             controllers.ParkingController.stopParkingMeter(parkingMeterId)
+GET         /vehicle/:vehicleLicensePlateId/has-active-parking-meter        controllers.ParkingController.hasVehicleHasActiveParkingMeter(vehicleLicensePlateId)

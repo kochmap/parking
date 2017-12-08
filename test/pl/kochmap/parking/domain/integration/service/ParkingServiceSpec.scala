@@ -14,7 +14,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
 
   "Parking service" should "start existing parking meter" in {
 
-    Given("a parking Service, a vehicle and one parking meter in db")
+    Given("a parking service, a vehicle and one parking meter in db")
     val parkingMeterIdFuture =
       db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
 
@@ -36,7 +36,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
   }
 
   it should "start non-existing parking meter" in {
-    Given("a parking Service, a vehicle")
+    Given("a parking service, a vehicle")
 
     When("start parking meter is invoked")
     val ticketEither = for {
@@ -54,7 +54,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
   }
 
   it should "not start already started parking meter" in {
-    Given("a parking Service, a vehicle and one meter in db")
+    Given("a parking service, a vehicle and one meter in db")
     val parkingMeterIdFuture =
       db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
 
@@ -80,7 +80,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
 
   it should "stop started parking meter" in {
 
-    Given("a parking Service, a vehicle and one parking meter in db")
+    Given("a parking service, a vehicle and one parking meter in db")
     val parkingMeterIdFuture =
       db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
 
@@ -102,7 +102,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
   }
 
   it should "not stop stopped(new) parking meter" in {
-    Given("a parking Service")
+    Given("a parking service")
 
     When("stop parking meter is invoked")
     val ticketEither = for {
@@ -120,7 +120,7 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
   }
 
   it should "not stop already stopped parking meter" in {
-    Given("a parking Service, a vehicle and one parking meter in db")
+    Given("a parking service, a vehicle and one parking meter in db")
     val parkingMeterIdFuture =
       db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
 
@@ -141,6 +141,52 @@ class ParkingServiceSpec extends AbstractIntegrationSpec {
         case Some(Left(_: ParkingMeterAlreadyStoppedException)) => succeed
         case _                                                  => fail()
       }
+  }
+
+  it should "tell that parking meter is started for vehicle when it before occurred" in {
+    Given(
+      "a parking service, a vehicle and parking meter which is started in db")
+
+    val ticketEither = for {
+      _ <- db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
+      ticket <- parkingService.startParkingMeter(parkingMeter.domainId,
+                                                 vehicleDto)
+    } yield ticket
+
+    When("has vehicle has active parking meter is invoked")
+    val result = for {
+      _ <- ticketEither
+      res <- parkingService.hasVehicleHasActiveParkingMeter(
+        vehicleDto.licensePlateNumber)
+    } yield res
+
+    Then("result should be true")
+    result.map {
+      case true  => succeed
+      case false => fail()
+    }
+  }
+
+  it should "tell that parking meter isn't started for vehicle" in {
+    Given(
+      "a parking service, a vehicle and parking meter which isn't started in db")
+
+    val parkingMeterIdFuture = for {
+      parkingMeterId <- db.run(parkingMeterRepository.insertParkingMeter(parkingMeter))
+    } yield parkingMeterId
+
+    When("has vehicle has active parking meter is invoked")
+    val result = for {
+      _ <- parkingMeterIdFuture
+      res <- parkingService.hasVehicleHasActiveParkingMeter(
+        vehicleDto.licensePlateNumber)
+    } yield res
+
+    Then("result should be false")
+    result.map {
+      case false  => succeed
+      case true => fail()
+    }
   }
 
 }

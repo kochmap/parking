@@ -52,9 +52,6 @@ class ParkingMeterRepository @Inject() (
     buildFromFindQuery(findQuery)
   }
 
-  def isVehicleStartedParkingMeter(
-      carLicensePlateNumber: String): slick.dbio.DBIO[Boolean] = ???
-
   def earningsFrom(localDate: LocalDate): slick.dbio.DBIO[(Double, Currency)] =
     ???
 

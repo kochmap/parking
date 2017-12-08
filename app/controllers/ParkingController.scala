@@ -10,7 +10,7 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class ParkingController @Inject() (
+class ParkingController @Inject()(
     val controllerComponents: ControllerComponents,
     parkingService: ParkingService)(implicit ec: ExecutionContext)
     extends BaseController {
@@ -45,4 +45,9 @@ class ParkingController @Inject() (
         case None                => Future.successful(NotFound)
       }
     }
+
+  def hasVehicleHasActiveParkingMeter(
+      vehicleLicensePlateId: String): Action[AnyContent] = Action.async {
+    parkingService.hasVehicleHasActiveParkingMeter(vehicleLicensePlateId).map(has => Ok(Json.toJson(has)))
+  }
 }

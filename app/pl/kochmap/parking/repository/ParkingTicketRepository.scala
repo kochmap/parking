@@ -47,4 +47,13 @@ class ParkingTicketRepository @Inject()(tables: Tables)(
       .map(_ => ())
   }
 
+  def hasVehicleHasActiveParkingMeter(
+      vehicleLicensePlateId: String): slick.dbio.DBIO[Boolean] = {
+    parkingTickets
+      .filter(_.vehicleLicensePlateNumber === vehicleLicensePlateId)
+      .filterNot(_.stopTimestamp.isDefined)
+      .exists
+      .result
+  }
+
 }
