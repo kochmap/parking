@@ -11,18 +11,15 @@ import pl.kochmap.parking.repository.{
   ParkingTicketRepository
 }
 import play.api.db.slick.DatabaseConfigProvider
-import slick.basic.DatabaseConfig
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ParkingService @Inject()(
+class ParkingMeterService @Inject()(
     parkingMeterRepository: ParkingMeterRepository,
     parkingTicketRepository: ParkingTicketRepository,
-    dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
-
-  val dbConfig: DatabaseConfig[JdbcProfile] = dbConfigProvider.get[JdbcProfile]
+    val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
+    extends TransactionalService {
 
   import dbConfig._
   import profile.api._
@@ -79,14 +76,6 @@ class ParkingService @Inject()(
       }
   }
 
-  def hasVehicleHasActiveParkingMeter(
-      vehicleLicensePlateId: String): Future[Boolean] = {
-    parkingTicketRepository.hasVehicleHasActiveParkingMeter(
-      vehicleLicensePlateId)
-  }
-
   def earningsFrom(localDate: LocalDate): Future[(Double, Currency)] = ???
 
-  private implicit def runTransactionallyOnDb[R](dbio: DBIO[R]): Future[R] =
-    db.run(dbio.transactionally)
 }

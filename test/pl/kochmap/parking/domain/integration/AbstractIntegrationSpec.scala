@@ -2,7 +2,7 @@ package pl.kochmap.parking.domain.integration
 
 import org.scalatest._
 import pl.kochmap.parking.repository.{ParkingMeterRepository, Tables}
-import pl.kochmap.parking.service.ParkingService
+import pl.kochmap.parking.service.{ParkingMeterService, VehicleService}
 import play.api.{Application, Logger}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.Injector
@@ -24,7 +24,10 @@ trait AbstractIntegrationSpec
 
   val tables: Tables = injector.instanceOf[Tables]
 
-  val parkingService: ParkingService = injector.instanceOf[ParkingService]
+  val parkingMeterService: ParkingMeterService =
+    injector.instanceOf[ParkingMeterService]
+
+  val vehicleService: VehicleService = injector.instanceOf[VehicleService]
 
   val dbConfigProvider: DatabaseConfigProvider =
     injector.instanceOf[DatabaseConfigProvider]
