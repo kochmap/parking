@@ -1,11 +1,13 @@
 package pl.kochmap.parking.domain.money
 
 import pl.kochmap.parking.domain.money.Currency.Currency
+import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
 import pl.kochmap.parking.repository.FeeRow
 
-class Fee(val id: Option[Long],
+case class Fee(val id: Option[Long],
           val baseAmount: Double,
           val currencySnapshot: CurrencySnapshot,
+          val feeTariff: FeeTariff,
           val parkingTicketId: Option[Long]) {
 
   val amountInCurrency: Double = currencySnapshot.currency.formater(
@@ -15,6 +17,7 @@ class Fee(val id: Option[Long],
     this(feeRow.id,
          feeRow.baseAmount,
          CurrencySnapshot(feeRow.exchangeRate, feeRow.currency),
+         feeRow.feeTariff,
          feeRow.parkingTicketId)
   }
 
@@ -24,6 +27,7 @@ class Fee(val id: Option[Long],
            currencySnapshot.exchangeRate,
            currencySnapshot.currency,
            amountInCurrency,
+           feeTariff,
            parkingTicketId)
 }
 

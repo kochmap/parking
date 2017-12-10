@@ -2,7 +2,8 @@ package pl.kochmap.parking.domain
 
 import java.time.Instant
 
-import pl.kochmap.parking.repository.ParkingTicketRow
+import pl.kochmap.parking.domain.money.Fee
+import pl.kochmap.parking.repository.{FeeRow, ParkingTicketRow}
 
 sealed trait ParkingTicket {
   def id: Option[Long]
@@ -10,6 +11,7 @@ sealed trait ParkingTicket {
   def vehicleLicensePlateNumber: String
   def startTimestamp: Instant
   def stopTimestampOption: Option[Instant]
+  def feeOption: Option[Fee]
   def toParkingTicketRow: ParkingTicketRow =
     ParkingTicketRow(id,
                      parkMeterId,
@@ -30,7 +32,8 @@ case class ActiveParkingTicket(id: Option[Long],
                          vehicleLicensePlateNumber,
                          startTimestamp)
 
-  override def stopTimestampOption: Option[Instant] = None
+  override val stopTimestampOption: Option[Instant] = None
+  override val feeOption: Option[Fee] = None
 
 }
 
@@ -38,7 +41,8 @@ case class StoppedParkingTicket(id: Option[Long],
                                 parkMeterId: Option[Long],
                                 vehicleLicensePlateNumber: String,
                                 startTimestamp: Instant,
-                                stopTimestamp: Instant = Instant.now())
+                                stopTimestamp: Instant = Instant.now(),
+                                feeOption: Option[Fee] = None)
     extends ParkingTicket {
   override def toParkingTicketRow: ParkingTicketRow =
     ParkingTicketRow(id,
@@ -51,15 +55,20 @@ case class StoppedParkingTicket(id: Option[Long],
 }
 
 object ParkingTicket {
-  def apply(parkingTicketRow: ParkingTicketRow): ParkingTicket =
+  def apply(parkingTicketRow: ParkingTicketRow,
+            feeOption: Option[Fee] = None): ParkingTicket =
     parkingTicketRow.stopTimestampOption match {
       case Some(stopTimestamp) =>
-        StoppedParkingTicket(parkingTicketRow.id,
-                             parkingTicketRow.parkingMeterId,
-                             parkingTicketRow.vehicleLicensePlateNumber,
-                             parkingTicketRow.startTimestamp,
-                             stopTimestamp)
+        StoppedParkingTicket(
+          parkingTicketRow.id,
+          parkingTicketRow.parkingMeterId,
+          parkingTicketRow.vehicleLicensePlateNumber,
+          parkingTicketRow.startTimestamp,
+          stopTimestamp,
+          feeOption
+        )
       case None =>
+        assert(feeOption.isEmpty)
         ActiveParkingTicket(parkingTicketRow.id,
                             parkingTicketRow.parkingMeterId,
                             parkingTicketRow.vehicleLicensePlateNumber,

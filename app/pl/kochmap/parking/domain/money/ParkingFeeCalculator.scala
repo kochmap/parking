@@ -12,11 +12,12 @@ object ParkingFeeCalculator {
                    currencySnapshot: CurrencySnapshot,
                    feeTariff: FeeTariff): Fee = {
     new Fee(
-      None,
+      stoppedParkingTicket.feeOption.flatMap(_.id),
       calculateFee(feeTariff,
                    Duration.between(stoppedParkingTicket.startTimestamp,
                                     stoppedParkingTicket.stopTimestamp)),
       currencySnapshot,
+      feeTariff,
       stoppedParkingTicket.id
     )
   }

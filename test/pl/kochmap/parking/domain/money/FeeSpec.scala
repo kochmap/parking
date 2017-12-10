@@ -9,9 +9,13 @@ class FeeSpec extends FlatSpec with GivenWhenThen {
   implicit val doubleEq: Equality[Double] =
     TolerantNumerics.tolerantDoubleEquality(epislon)
 
-  "Fee" should "have been be computed from 0.003 to 0.01 using ceil " in {
-    Given("fee in PLN where basic amount is 0.003")
-    val fee = new Fee(None, 0.005, CurrencySnapshot(Currency.PLN), None)
+  "Fee" should "have been be computed from 0.003 to 0.01 using ceil" in {
+    Given("fee in PLN on regular tariff where basic amount is 0.003")
+    val fee = new Fee(None,
+                      0.005,
+                      CurrencySnapshot(Currency.PLN),
+                      FeeTariff.REGULAR_TARIFF,
+                      None)
 
     When("amount in currency is taken")
     val amountInCurrency = fee.amountInCurrency

@@ -1,0 +1,9 @@
+POST http://localhost:9000/parking-ticket/1/charge-fee
+Content-Type: application/json
+
+{
+    "tariff": "VIP_TARIFF",
+    "currency": "PLN"
+}
+
+###

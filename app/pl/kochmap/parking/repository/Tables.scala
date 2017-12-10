@@ -4,8 +4,9 @@ import java.sql.Timestamp
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
 
-import pl.kochmap.parking.domain.money.Currency
+import pl.kochmap.parking.domain.money.{Currency, FeeTariff}
 import pl.kochmap.parking.domain.money.Currency.Currency
+import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
 import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
 import slick.basic.DatabaseConfig
@@ -35,6 +36,11 @@ class Tables @Inject()(dbConfigProvider: DatabaseConfigProvider)(
   implicit val currencyColumnType = MappedColumnType.base[Currency, String](
     c => c.toString,
     s => Currency.withName(s)
+  )
+
+  implicit val feeTariffColumnType = MappedColumnType.base[FeeTariff, String](
+    ft => ft.toString,
+    s => FeeTariff.withName(s)
   )
 
   class ParkingMeters(tag: Tag)
@@ -90,6 +96,8 @@ class Tables @Inject()(dbConfigProvider: DatabaseConfigProvider)(
 
     def amountInCurrency: Rep[Double] = column[Double]("amount_in_currency")
 
+    def feeTariff: Rep[FeeTariff] = column[FeeTariff]("fee_tariff")
+
     def parkingTicketId: Rep[Long] = column[Long]("parking_ticket_id")
 
     def * : ProvenShape[FeeRow] =
@@ -98,6 +106,7 @@ class Tables @Inject()(dbConfigProvider: DatabaseConfigProvider)(
        exchangeRate,
        currency,
        amountInCurrency,
+       feeTariff,
        parkingTicketId.?) <> (FeeRow.tupled, FeeRow.unapply)
 
     def parkingTicket: ForeignKeyQuery[ParkingTickets, ParkingTicketRow] =
@@ -130,4 +139,5 @@ case class FeeRow(id: Option[Long],
                   exchangeRate: Double,
                   currency: Currency,
                   amountInCurrency: Double,
+                  feeTariff: FeeTariff,
                   parkingTicketId: Option[Long])

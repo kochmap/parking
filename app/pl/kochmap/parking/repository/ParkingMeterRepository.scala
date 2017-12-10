@@ -9,9 +9,10 @@ import pl.kochmap.parking.domain.money.Currency.Currency
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ParkingMeterRepository @Inject() (
+class ParkingMeterRepository @Inject()(
     tables: Tables,
-    parkingTicketRepository: ParkingTicketRepository)(implicit ec: ExecutionContext) {
+    parkingTicketRepository: ParkingTicketRepository)(
+    implicit ec: ExecutionContext) {
 
   import tables._
   import dbConfig._
@@ -27,8 +28,9 @@ class ParkingMeterRepository @Inject() (
       parkingTicketsWithCorrectParkingMeterId = parkingMeter.tickets.map(pt =>
         pt.toParkingTicketRow.copy(parkingMeterId = Some(parkingMeterId)))
 
-      _ <- DBIO.sequence(parkingTicketsWithCorrectParkingMeterId.map(
-        parkingTicketRepository.insertParkingTicketRow))
+      _ <- DBIO.sequence(
+        parkingTicketsWithCorrectParkingMeterId.map(
+          parkingTicketRepository.insertParkingTicketRow))
 
     } yield parkingMeterId
   }
@@ -40,7 +42,7 @@ class ParkingMeterRepository @Inject() (
       .result
       .headOption
 
-    buildFromFindQuery(findQuery)
+    buildFromFindHeadOptionQuery(findQuery)
   }
 
   def findById(id: Long): slick.dbio.DBIO[Option[ParkingMeter]] = {
@@ -49,13 +51,14 @@ class ParkingMeterRepository @Inject() (
       .result
       .headOption
 
-    buildFromFindQuery(findQuery)
+    buildFromFindHeadOptionQuery(findQuery)
   }
 
   def earningsFrom(localDate: LocalDate): slick.dbio.DBIO[(Double, Currency)] =
     ???
 
-  private def buildFromFindQuery(findQuery: DBIO[Option[ParkingMeterRow]]) = {
+  private def buildFromFindHeadOptionQuery(
+      findQuery: DBIO[Option[ParkingMeterRow]]) = {
     for {
       parkingMeterRowOption <- findQuery
       parkingTickets <- parkingMeterRowOption

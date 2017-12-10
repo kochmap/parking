@@ -107,6 +107,56 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
       case None => succeed
       case _    => fail()
     }
+  }
 
+  it should "charge fee and then charge fee and last charge fee should be in db" in {
+
+    Given(
+      "a parking ticket service, stopped parking ticket in db and ticket fees charge dto")
+    val now = Instant.now()
+    val ticketFuture = for {
+      parkingMeterId <- db.run(
+        parkingMeterRepository.insertParkingMeter(
+          new ParkingMeter(None, "1234", Nil)))
+      ticket = StoppedParkingTicket(None,
+                                    Some(parkingMeterId),
+                                    "abcde",
+                                    now.minusSeconds(3600),
+                                    now)
+      ticketId <- db.run(parkingTicketRepository.insertParkingTicket(ticket))
+
+    } yield ticket.copy(id = Some(ticketId))
+    val firstTicketFeeChargeDto =
+      TicketFeeChargeDto(FeeTariff.REGULAR_TARIFF, Currency.PLN)
+
+    val secondTicketFeeChargeDto =
+      TicketFeeChargeDto(FeeTariff.VIP_TARIFF, Currency.PLN)
+
+    When("charge fee for ticket is invoked")
+    val twoResultTuppleEitherFuture = for {
+      ticket <- ticketFuture
+      ticketId = ticket.id.get
+      firstResultEither <- parkingTicketService.chargeFeeForTicket(
+        ticketId,
+        firstTicketFeeChargeDto)
+
+      secondResultEither <- parkingTicketService.chargeFeeForTicket(
+        ticketId,
+        secondTicketFeeChargeDto)
+
+      feeFetchedFromDb <- parkingTicketService.getTicketFee(ticketId)
+
+    } yield (firstResultEither, secondResultEither, feeFetchedFromDb)
+
+    Then("first fee should have same id as second fee and be equal to fee fetched from db")
+    twoResultTuppleEitherFuture.map {
+      case (Some(Right(firstFee: Fee)),
+            Some(Right(secondFee: Fee)),
+            Some(feeFromDb: Fee)) =>
+        firstFee.id should be(secondFee.id)
+        secondFee should be(feeFromDb)
+
+      case _ => fail()
+    }
   }
 }

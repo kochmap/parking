@@ -4,23 +4,16 @@ import controllers.dto.{TicketFeeChargeDto, VehicleDto}
 import pl.kochmap.parking.domain.money.Currency.Currency
 import pl.kochmap.parking.domain.money.{Currency, Fee, FeeTariff}
 import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
-import pl.kochmap.parking.domain.{ActiveParkingTicket, DomainException, StoppedParkingTicket}
+import pl.kochmap.parking.domain.{
+  ActiveParkingTicket,
+  DomainException,
+  StoppedParkingTicket
+}
 import play.api.libs.json._
 
 object JsonConverters {
 
   implicit val vehicleDtoFormat: OFormat[VehicleDto] = Json.format[VehicleDto]
-  implicit val activeParkingTicket: OFormat[ActiveParkingTicket] =
-    Json.format[ActiveParkingTicket]
-
-  implicit val stoppedParkingTicket: OFormat[StoppedParkingTicket] =
-    Json.format[StoppedParkingTicket]
-
-  implicit val domainExceptionWrites: Writes[DomainException] =
-    (o: DomainException) =>
-      Json.obj(
-        "message" -> o.message
-    )
 
   implicit val feeWrites: Writes[Fee] = (o: Fee) =>
     Json.obj(
@@ -28,10 +21,23 @@ object JsonConverters {
       "currency" -> o.currencySnapshot.currency.toString
   )
 
+  implicit val activeParkingTicketWrites: Writes[ActiveParkingTicket] =
+    Json.writes[ActiveParkingTicket]
+
+  implicit val stoppedParkingTicketWrites: Writes[StoppedParkingTicket] =
+    Json.writes[StoppedParkingTicket]
+
+  implicit val domainExceptionWrites: Writes[DomainException] =
+    (o: DomainException) =>
+      Json.obj(
+        "message" -> o.message
+    )
+
   implicit val feeTariffReads: Reads[FeeTariff] = Reads.enumNameReads(FeeTariff)
 
   implicit val currencyReads: Reads[Currency] = Reads.enumNameReads(Currency)
 
-  implicit val ticketFeeChargeDtoReads: Reads[TicketFeeChargeDto] = Json.reads[TicketFeeChargeDto]
+  implicit val ticketFeeChargeDtoReads: Reads[TicketFeeChargeDto] =
+    Json.reads[TicketFeeChargeDto]
 
 }
