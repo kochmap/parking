@@ -1,8 +1,16 @@
 package pl.kochmap.parking.domain.integration
 
 import org.scalatest._
-import pl.kochmap.parking.repository.{ParkingMeterRepository, Tables}
-import pl.kochmap.parking.service.{ParkingMeterService, VehicleService}
+import pl.kochmap.parking.repository.{
+  ParkingMeterRepository,
+  ParkingTicketRepository,
+  Tables
+}
+import pl.kochmap.parking.service.{
+  ParkingMeterService,
+  ParkingTicketService,
+  VehicleService
+}
 import play.api.{Application, Logger}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.Injector
@@ -37,12 +45,18 @@ trait AbstractIntegrationSpec
   val parkingMeterRepository: ParkingMeterRepository =
     injector.instanceOf[ParkingMeterRepository]
 
+  val parkingTicketService: ParkingTicketService =
+    injector.instanceOf[ParkingTicketService]
+
+  val parkingTicketRepository: ParkingTicketRepository =
+    injector.instanceOf[ParkingTicketRepository]
+
   override protected def beforeEach(): Unit = {
     val dbConf = dbConfig
     import dbConf._
     import profile.api._
-    db.run(sql"DROP ALL OBJECTS".asUpdate)
-    Await.result(tables.createSchema(), Duration.Inf)
+    Await.ready(db.run(sql"DROP ALL OBJECTS".asUpdate), Duration.Inf)
+    Await.ready(tables.createSchema(), Duration.Inf)
   }
 }
 

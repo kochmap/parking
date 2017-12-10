@@ -23,16 +23,16 @@ class ParkingMeterController @Inject()(
 
   def startParkingMeter(parkingMeterId: String): Action[AnyContent] =
     Action.async { implicit request =>
-      val vehicleDtoTry = Try {
+      val vehicleDtoParseFromJsonTry = Try {
         request.body.asJson.map(_.as[VehicleDto]).get
       }
 
       Future
-        .fromTry(vehicleDtoTry)
+        .fromTry(vehicleDtoParseFromJsonTry)
         .flatMap(parkingMeterService.startParkingMeter(parkingMeterId, _))
         .flatMap {
           case Some(Right(ticket)) => Future.successful(Ok(Json.toJson(ticket)))
-          case Some(Left(e))       => Future.successful(Forbidden(e.toJson))
+          case Some(Left(e))       => Future.successful(Forbidden(Json.toJson(e)))
           case None                => Future.successful(NotFound)
         }
     }
@@ -41,7 +41,7 @@ class ParkingMeterController @Inject()(
     Action.async {
       parkingMeterService.stopParkingMeter(parkingMeterId).flatMap {
         case Some(Right(ticket)) => Future.successful(Ok(Json.toJson(ticket)))
-        case Some(Left(e))       => Future.successful(Forbidden(e.toJson))
+        case Some(Left(e))       => Future.successful(Forbidden(Json.toJson(e)))
         case None                => Future.successful(NotFound)
       }
     }
