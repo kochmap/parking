@@ -42,10 +42,10 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
     val ticketFeeChargeDto =
       TicketFeeChargeDto(FeeTariff.REGULAR_TARIFF, Currency.PLN)
 
-    When("charge fee for ticket is invoked")
+    When("charge ticket fee is invoked")
     val resultEitherFuture = for {
       ticket <- ticketFuture
-      resultEither <- parkingTicketService.chargeFeeForTicket(
+      resultEither <- parkingTicketService.chargeTicketFee(
         ticket.id.get,
         ticketFeeChargeDto)
 
@@ -74,10 +74,10 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
     val ticketFeeChargeDto =
       TicketFeeChargeDto(FeeTariff.REGULAR_TARIFF, Currency.PLN)
 
-    When("charge fee for ticket is invoked")
+    When("charge ticket fee is invoked")
     val resultEitherFuture = for {
       ticket <- ticketFuture
-      resultEither <- parkingTicketService.chargeFeeForTicket(
+      resultEither <- parkingTicketService.chargeTicketFee(
         ticket.id.get,
         ticketFeeChargeDto)
     } yield resultEither
@@ -98,9 +98,9 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
     val ticketFeeChargeDto =
       TicketFeeChargeDto(FeeTariff.REGULAR_TARIFF, Currency.PLN)
 
-    When("charge fee for ticket is invoked")
+    When("charge ticket fee is invoked")
     val resultEitherFuture =
-      parkingTicketService.chargeFeeForTicket(1, ticketFeeChargeDto)
+      parkingTicketService.chargeTicketFee(1, ticketFeeChargeDto)
 
     Then("result should be none")
     resultEitherFuture.map {
@@ -132,15 +132,15 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
     val secondTicketFeeChargeDto =
       TicketFeeChargeDto(FeeTariff.VIP_TARIFF, Currency.PLN)
 
-    When("charge fee for ticket is invoked")
+    When("charge ticket fee is invoked")
     val twoResultTuppleEitherFuture = for {
       ticket <- ticketFuture
       ticketId = ticket.id.get
-      firstResultEither <- parkingTicketService.chargeFeeForTicket(
+      firstResultEither <- parkingTicketService.chargeTicketFee(
         ticketId,
         firstTicketFeeChargeDto)
 
-      secondResultEither <- parkingTicketService.chargeFeeForTicket(
+      secondResultEither <- parkingTicketService.chargeTicketFee(
         ticketId,
         secondTicketFeeChargeDto)
 

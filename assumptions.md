@@ -1,8 +1,7 @@
-1. Fee is calculated by adding hour rates e.g. 4 hours of parking for regular rate will cost (1 + 2 + 4 + 8) = 15
-2. Application use in memory sql database h2.
-3. Application run on 9000 port.
-4. Starting of non-existing parking meter will create new one.
-5. Testing requests examples in intellij idea format are in requests directory.
-6. "Check if vehicle has started the parking meter" I assumed that system check if there is an active parking ticket 
-    for that vehicle. Active parking ticket means that for specific car parking meter has been started and 
-    hasn't been stopped yet.
+- App is written in Scala using Play framework and for testing scala test with scala mock. 
+Moreover app use in memory sql database h2 so let's say it is "fully functional".
+- Examples of request can be found in directory requests. They are written in Intellij Idea request format.
+For api description please refer to api.md
+- Starting parking meter will create new one if not exists.
+- Fee is calculated by adding hour rates e.g. 4 hours of parking for regular rate will cost (1 + 2 + 4 + 8) = 15.
+- In order to get ticket fee it must be charged.

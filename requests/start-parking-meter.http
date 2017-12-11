@@ -1,4 +1,4 @@
-POST http://localhost:9000/parking-meter/1/start
+POST http://localhost:9000/parking-meters/1/start
 Content-Type: application/json
 
 {

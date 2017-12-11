@@ -1,3 +1,3 @@
-GET http://localhost:9000/vehicle/abcde/has-active-parking-meter
+GET http://localhost:9000/vehicles/abcde/has-active-parking-meter
 
 ###

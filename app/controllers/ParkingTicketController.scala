@@ -18,7 +18,7 @@ class ParkingTicketController @Inject()(
     implicit executionContext: ExecutionContext)
     extends BaseController {
 
-  def checkoutTicket(ticketId: String): Action[AnyContent] = Action.async {
+  def chargeTicketFee(ticketId: String): Action[AnyContent] = Action.async {
     implicit request =>
       val ticketChargeFeeDtoParseFromJsonTry = Try {
         request.body.asJson.map(_.as[TicketFeeChargeDto]).get
@@ -26,7 +26,7 @@ class ParkingTicketController @Inject()(
 
       Future
         .fromTry(ticketChargeFeeDtoParseFromJsonTry)
-        .flatMap(parkingTicketService.chargeFeeForTicket(ticketId.toLong, _))
+        .flatMap(parkingTicketService.chargeTicketFee(ticketId.toLong, _))
         .map {
           case Some(Right(fee)) => Ok(Json.toJson(fee))
           case Some(Left(e))    => Forbidden(Json.toJson(e))

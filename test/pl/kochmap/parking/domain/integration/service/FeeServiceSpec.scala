@@ -69,10 +69,10 @@ class FeeServiceSpec extends AbstractIntegrationSpec with Matchers {
 
       givenDayFeesOptionEither <- Future.sequence(
         givenDayStoppedTicketsIds.map(id =>
-          parkingTicketService.chargeFeeForTicket(id, feeChargeDto)))
+          parkingTicketService.chargeTicketFee(id, feeChargeDto)))
 
       _ <- Future.sequence(anotherDayStoppedTicketIds.map(id =>
-        parkingTicketService.chargeFeeForTicket(id, feeChargeDto)))
+        parkingTicketService.chargeTicketFee(id, feeChargeDto)))
 
       givenDayEarnings = earningsFromFees(givenDayFeesOptionEither)
 

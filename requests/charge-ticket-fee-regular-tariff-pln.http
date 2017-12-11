@@ -1,4 +1,4 @@
-POST http://localhost:9000/parking-ticket/1/charge-fee
+POST http://localhost:9000/parking-tickets/1/charge-fee
 Content-Type: application/json
 
 {

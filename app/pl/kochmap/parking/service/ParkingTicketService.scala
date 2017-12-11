@@ -25,7 +25,7 @@ class ParkingTicketService @Inject()(
   import dbConfig._
   import profile.api._
 
-  def chargeFeeForTicket(
+  def chargeTicketFee(
       ticketId: Long,
       ticketFeeChargeDtoDto: TicketFeeChargeDto): Future[Option[
     Either[CanNotChargeTicketFeeBecauseTicketHasNotBeenStoppedYetException,
