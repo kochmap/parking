@@ -109,7 +109,7 @@ class ParkingTicketServiceSpec extends AbstractIntegrationSpec with Matchers {
     }
   }
 
-  it should "charge fee and then charge fee and last charge fee should be in db" in {
+  it should "charge fee and then charge fee again and last charge fee should be in db" in {
 
     Given(
       "a parking ticket service, stopped parking ticket in db and ticket fees charge dto")

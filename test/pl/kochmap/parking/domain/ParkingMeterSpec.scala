@@ -1,15 +1,20 @@
 package pl.kochmap.parking.domain
 
+import java.time.Instant
+
 import org.scalatest.{FlatSpec, GivenWhenThen}
+
+import scala.util.Try
 
 class ParkingMeterSpec extends FlatSpec with GivenWhenThen {
 
   "Stopped parking meter" should "start" in {
-    Given("a stopped parking meter")
+    Given("a stopped parking meter and vehicle license id")
     val parkingMeter = new ParkingMeter(Some(1), "abcd", Nil)
+    val vehicleLicenseId = "abcde"
 
     When("start for is invoked")
-    val resultEither = parkingMeter.startFor("abcde")
+    val resultEither = parkingMeter.startFor(vehicleLicenseId)
 
     Then("result should be an active parking ticket")
     resultEither match {
@@ -21,8 +26,7 @@ class ParkingMeterSpec extends FlatSpec with GivenWhenThen {
   it should "not stop" in {
     Given("a stopped parking meter")
     val parkingMeter =
-      new ParkingMeter(Some(1),
-                       "abcd", Nil)
+      new ParkingMeter(Some(1), "abcd", Nil)
 
     When("stop is invoked")
     val resultEither = parkingMeter.stop
@@ -30,8 +34,8 @@ class ParkingMeterSpec extends FlatSpec with GivenWhenThen {
     Then("result should be a exception that parking meter was stopped")
     resultEither match {
       case Left(_: ParkingMeterAlreadyStoppedException) => succeed
-      case Right(_: ParkingTicket)                        => fail("excepting exception not ticket")
-      case Left(sth)                                      => fail(s"wasn't except that ${sth.toString}")
+      case Right(_: ParkingTicket)                      => fail("excepting exception not ticket")
+      case Left(sth)                                    => fail(s"wasn't except that ${sth.toString}")
     }
   }
 
@@ -68,5 +72,36 @@ class ParkingMeterSpec extends FlatSpec with GivenWhenThen {
       case Right(_: StoppedParkingTicket) => succeed
       case _                              => fail("it wasn't a parking ticket")
     }
+  }
+
+  "Parking meter" should "have max one active ticket" in {
+    Given("an active parking ticket and stopped ticket")
+    val activeParkingTicket = ActiveParkingTicket(Some(1l), Some(1l), "abcde")
+    val stoppedParkingTicket =
+      StoppedParkingTicket(Some(2l), Some(1l), "abcde", Instant.now())
+
+    When("constructing parking meters")
+    val parkingMeterWithoutTicketsConstructionTry = Try {
+      new ParkingMeter(activeParkingTicket.parkingMeterId, "abcd", Nil)
+    }
+
+    val parkingMeterWithOneActiveParkingTicketConstructionTry = Try {
+      new ParkingMeter(activeParkingTicket.parkingMeterId,
+                       "abcd",
+                       List(activeParkingTicket, stoppedParkingTicket))
+    }
+    val parkingMeterWithTwoActiveParkingTicketConstructionTry = Try {
+      new ParkingMeter(activeParkingTicket.parkingMeterId,
+                       "abcd",
+                       List(activeParkingTicket,
+                            activeParkingTicket.copy(id = Some(3l)),
+                            stoppedParkingTicket))
+    }
+
+    Then("constructed should be parking meters with one or less active tickets")
+    assert(
+      parkingMeterWithoutTicketsConstructionTry.isSuccess &&
+        parkingMeterWithOneActiveParkingTicketConstructionTry.isSuccess &&
+        parkingMeterWithTwoActiveParkingTicketConstructionTry.isFailure)
   }
 }
