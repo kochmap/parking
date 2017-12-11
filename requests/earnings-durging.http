@@ -1,4 +1,4 @@
-GET http://localhost:9000/fees/earnings/during/2017-12-10
+GET http://localhost:9000/fees?date=2017-12-10
 
 ###
 

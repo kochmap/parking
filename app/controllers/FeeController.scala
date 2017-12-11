@@ -15,9 +15,9 @@ class FeeController @Inject()(
     val controllerComponents: ControllerComponents,
     feeService: FeeService)(implicit executionContext: ExecutionContext)
     extends BaseController {
-  def earningsDuring(date: String): Action[AnyContent] = Action.async {
+  def earningsDuring(dateString: String): Action[AnyContent] = Action.async {
     val dateParsingTry = Try {
-      LocalDate.parse(date)
+      LocalDate.parse(dateString)
     }
     Future
       .fromTry(dateParsingTry)

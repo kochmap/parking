@@ -148,10 +148,10 @@ Required:
 ----
 
 ```http request
-GET /fees/earnings/during/:date
+GET /fees?date=:date
 ```
 
-**Path parameters:**
+**Query parameters:**
 
 Required:
 
