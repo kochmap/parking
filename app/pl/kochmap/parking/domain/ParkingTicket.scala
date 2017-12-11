@@ -7,28 +7,28 @@ import pl.kochmap.parking.repository.{FeeRow, ParkingTicketRow}
 
 sealed trait ParkingTicket {
   def id: Option[Long]
-  def parkMeterId: Option[Long]
+  def parkingMeterId: Option[Long]
   def vehicleLicensePlateNumber: String
   def startTimestamp: Instant
   def stopTimestampOption: Option[Instant]
   def feeOption: Option[Fee]
   def toParkingTicketRow: ParkingTicketRow =
     ParkingTicketRow(id,
-                     parkMeterId,
+                     parkingMeterId,
                      vehicleLicensePlateNumber,
                      startTimestamp,
                      stopTimestampOption)
 }
 
 case class ActiveParkingTicket(id: Option[Long],
-                               parkMeterId: Option[Long],
+                               parkingMeterId: Option[Long],
                                vehicleLicensePlateNumber: String,
                                startTimestamp: Instant = Instant.now())
     extends ParkingTicket {
 
   def stopCountingFee: StoppedParkingTicket =
     StoppedParkingTicket(id,
-                         parkMeterId,
+                         parkingMeterId,
                          vehicleLicensePlateNumber,
                          startTimestamp)
 
@@ -38,7 +38,7 @@ case class ActiveParkingTicket(id: Option[Long],
 }
 
 case class StoppedParkingTicket(id: Option[Long],
-                                parkMeterId: Option[Long],
+                                parkingMeterId: Option[Long],
                                 vehicleLicensePlateNumber: String,
                                 startTimestamp: Instant,
                                 stopTimestamp: Instant = Instant.now(),
@@ -46,7 +46,7 @@ case class StoppedParkingTicket(id: Option[Long],
     extends ParkingTicket {
   override def toParkingTicketRow: ParkingTicketRow =
     ParkingTicketRow(id,
-                     parkMeterId,
+                     parkingMeterId,
                      vehicleLicensePlateNumber,
                      startTimestamp,
                      Some(stopTimestamp))

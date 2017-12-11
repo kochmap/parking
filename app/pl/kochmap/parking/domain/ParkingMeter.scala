@@ -9,6 +9,8 @@ class ParkingMeter(val id: Option[Long],
     case _                      => false
   } <= 1)
 
+  assert(tickets.forall(_.parkingMeterId == id))
+
   def parkingMeterRunning: Boolean = tickets.exists {
     case _: ActiveParkingTicket => true
     case _                      => false

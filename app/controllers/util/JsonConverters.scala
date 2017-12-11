@@ -1,14 +1,10 @@
-package controllers
+package controllers.util
 
 import controllers.dto.{TicketFeeChargeDto, VehicleDto}
 import pl.kochmap.parking.domain.money.Currency.Currency
-import pl.kochmap.parking.domain.money.{Currency, Fee, FeeTariff}
 import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
-import pl.kochmap.parking.domain.{
-  ActiveParkingTicket,
-  DomainException,
-  StoppedParkingTicket
-}
+import pl.kochmap.parking.domain.money.{Currency, Fee, FeeTariff}
+import pl.kochmap.parking.domain.{ActiveParkingTicket, DomainException, StoppedParkingTicket}
 import play.api.libs.json._
 
 object JsonConverters {

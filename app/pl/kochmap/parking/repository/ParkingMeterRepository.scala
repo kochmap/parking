@@ -54,9 +54,6 @@ class ParkingMeterRepository @Inject()(
     buildFromFindHeadOptionQuery(findQuery)
   }
 
-  def earningsFrom(localDate: LocalDate): slick.dbio.DBIO[(Double, Currency)] =
-    ???
-
   private def buildFromFindHeadOptionQuery(
       findQuery: DBIO[Option[ParkingMeterRow]]) = {
     for {

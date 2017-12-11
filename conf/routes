@@ -8,3 +8,4 @@ GET         /parking-meter/:parkingMeterId/stop                             cont
 GET         /vehicle/:vehicleLicensePlateId/has-active-parking-meter        controllers.VehicleController.hasVehicleHasActiveParkingMeter(vehicleLicensePlateId)
 POST        /parking-ticket/:ticketId/charge-fee                            controllers.ParkingTicketController.checkoutTicket(ticketId)
 GET         /parking-ticket/:ticketId/fee                                   controllers.ParkingTicketController.getTicketFee(ticketId)
+GET         /fees/earnings/during/:date                                     controllers.FeeController.earningsDuring(date)

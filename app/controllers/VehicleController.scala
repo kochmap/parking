@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import pl.kochmap.parking.service.VehicleService
 import play.api.libs.json.Json
@@ -8,6 +8,7 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class VehicleController @Inject()(
     val controllerComponents: ControllerComponents,
     vehicleService: VehicleService)(implicit ec: ExecutionContext)

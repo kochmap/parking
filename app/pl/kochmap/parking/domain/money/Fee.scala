@@ -4,11 +4,11 @@ import pl.kochmap.parking.domain.money.Currency.Currency
 import pl.kochmap.parking.domain.money.FeeTariff.FeeTariff
 import pl.kochmap.parking.repository.FeeRow
 
-case class Fee(val id: Option[Long],
-          val baseAmount: Double,
-          val currencySnapshot: CurrencySnapshot,
-          val feeTariff: FeeTariff,
-          val parkingTicketId: Option[Long]) {
+case class Fee(id: Option[Long],
+               baseAmount: Double,
+               currencySnapshot: CurrencySnapshot,
+               feeTariff: FeeTariff,
+               parkingTicketId: Option[Long]) {
 
   val amountInCurrency: Double = currencySnapshot.currency.formater(
     baseAmount * currencySnapshot.exchangeRate)
@@ -41,7 +41,9 @@ object Currency extends Enumeration {
   val PLN = Val(d => Math.ceil(d * 100.0d) / 100.0d)
 }
 
-case class CurrencySnapshot(exchangeRate: Double, currency: Currency)
+case class CurrencySnapshot(exchangeRate: Double, currency: Currency) {
+  def convert(baseAmount: Double): Double = exchangeRate * baseAmount
+}
 
 object CurrencySnapshot {
   def apply(currency: Currency): CurrencySnapshot = currency match {

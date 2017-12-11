@@ -9,6 +9,8 @@ object Util {
     def hours: Duration = Duration.ofHours(time)
 
     def seconds: Duration = Duration.ofSeconds(time)
+
+    def days: Duration = Duration.ofDays(time)
   }
 
 }

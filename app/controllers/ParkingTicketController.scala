@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.JsonConverters._
+import controllers.util.JsonConverters._
 import controllers.dto.TicketFeeChargeDto
 import pl.kochmap.parking.service.ParkingTicketService
 import play.api.libs.json.Json

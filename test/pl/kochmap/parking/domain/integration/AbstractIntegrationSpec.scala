@@ -7,6 +7,7 @@ import pl.kochmap.parking.repository.{
   Tables
 }
 import pl.kochmap.parking.service.{
+  FeeService,
   ParkingMeterService,
   ParkingTicketService,
   VehicleService
@@ -50,6 +51,8 @@ trait AbstractIntegrationSpec
 
   val parkingTicketRepository: ParkingTicketRepository =
     injector.instanceOf[ParkingTicketRepository]
+
+  val feeService: FeeService = injector.instanceOf[FeeService]
 
   override protected def beforeEach(): Unit = {
     val dbConf = dbConfig

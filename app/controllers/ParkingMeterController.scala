@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import controllers.dto.VehicleDto
 import pl.kochmap.parking.service.ParkingMeterService
@@ -10,12 +10,13 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+@Singleton
 class ParkingMeterController @Inject()(
     val controllerComponents: ControllerComponents,
     parkingMeterService: ParkingMeterService)(implicit ec: ExecutionContext)
     extends BaseController {
 
-  import JsonConverters._
+  import controllers.util.JsonConverters._
 
   def index = Action {
     Ok("Hello world")

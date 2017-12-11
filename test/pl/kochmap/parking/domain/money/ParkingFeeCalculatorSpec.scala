@@ -32,7 +32,7 @@ class ParkingFeeCalculatorSpec
                                              FeeTariff.REGULAR_TARIFF,
                                              7.0d)
 
-  it should behave like parkingFeeCalculator((3 hours).plusNanos(1),
+  it should behave like parkingFeeCalculator((3 hours).plusMillis(1),
                                              FeeTariff.REGULAR_TARIFF,
                                              15.0d)
 
@@ -55,7 +55,7 @@ class ParkingFeeCalculatorSpec
                                              5.0d)
 
 
-  it should behave like parkingFeeCalculator((3 hours).plusNanos(1),
+  it should behave like parkingFeeCalculator((3 hours).plusMillis(1),
     FeeTariff.VIP_TARIFF,
     9.5d)
 
@@ -99,7 +99,7 @@ object ParkingFeeCalculatorSpec {
     def createParkingTicketFor(duration: Duration,
                                tariff: FeeTariff): StoppedParkingTicket = {
       val startTimestamp = Instant.now()
-      val stopTimestamp = startTimestamp.plusNanos(duration.toNanos)
+      val stopTimestamp = startTimestamp.plusMillis(duration.toMillis)
       StoppedParkingTicket(Some(1),
                            parkingMeter.id,
                            "abcde",
