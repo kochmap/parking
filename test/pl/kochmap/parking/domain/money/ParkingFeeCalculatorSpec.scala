@@ -82,7 +82,7 @@ object ParkingFeeCalculatorSpec {
     def parkingFeeCalculator(duration: Duration,
                              tariff: FeeTariff,
                              feeExpected: Double) = {
-      it should s"calculate fee $feeExpected for ${duration.toString.stripPrefix("PT") on ${tariff.toString}" in {
+      it should s"calculate fee $feeExpected for ${duration.toString.stripPrefix("PT")} on ${tariff.toString}" in {
         Given(s"${duration.toHours} hours parking ticket and $tariff")
         val ticket =
           createParkingTicketFor(duration, tariff)
