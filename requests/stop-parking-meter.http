@@ -1,0 +1,3 @@
+GET http://localhost:9000/parking-meters/1/stop
+
+###
